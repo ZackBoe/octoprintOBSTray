@@ -1,4 +1,3 @@
-require('dotenv').config()
 const octoprint = require('./octoprint')
 const path = require('path')
 const { app, BrowserWindow, Menu, Tray, nativeImage, shell, ipcMain } = require('electron')
