@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>OctoPrint Tray</title>
+  <style>
+    @import url('./node_modules/normalize.css/normalize.css');
+    *, *:before, *:after {
+      box-sizing: border-box;
+    }
+    
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #16161a;
+      color: #fffffe;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    main {
+      margin: 0 auto;
+      max-width: 80ch;
+    }
+
+    header {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0 1rem;
+    }
+
+    .grab {
+      width: 100%;
+      -webkit-app-region: drag;
+      border-top: 15px solid #94a1b2;
+    }
+
+    main ul {
+      margin: 0;
+      padding: 0;
+    }
+    
+    main li {
+      margin: 0.5rem;
+      list-style-type: none;
+    }
+
+    footer {
+      margin-top: auto;
+      width: 320px;
+      background: #121629;
+    }
+
+    footer h3 { display: inline; }
+
+    footer ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    footer li {
+      margin: 0.25rem;
+    }
+
+    details {
+      border-top: 3px solid #b8c1ec;
+      padding: 1rem;
+    }
+
+    details summary {
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+
+    label, input, button {
+      display: block;
+      width: 100%;
+    }
+
+    input, button {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 0;
+      outline: 0;
+      margin: 0.5rem 0 1rem;
+    }
+
+    input[type='checkbox'] {
+     width: 25px;
+     height: 25px;
+    }
+
+    button {
+      cursor: pointer;
+      background: #1866c5;
+      color: #fffffe;
+      font-size: 120%;
+    }
+    
+    label.settings-overlay div {
+      display: flex;
+    }
+
+    input[name='settings-overlay_enable'] {
+      margin-right: 1rem;
+    }
+
+    input[name='settings-overlay_enable'], input[name='settings-overlay_port'] {
+      display: inline;
+      align-self: center;
+    }
+
+    #flash.success { color: lightgreen; }
+    #flash.error { color: lightcoral; }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="grab"></div>
+  <header>
+    <button id="btn-minimize">Minimize to tray</button>
+    <button id="btn-exit">Exit</button>
+  </header>
+  <header>
+    <button id="open-octoprint">Open Octoprint</button>
+  </header>
+
+  <main>
+    
+  </main>
+  <footer>
+    <details>
+      <summary><h3>Settings</h3><span id="user"></span></summary>
+      <label>OctoPrint URL
+        <input name="settings-octoprint_url" type="text" placeholder="http://octopi.local/">
+      </label>
+      
+      <label>OctoPrint API Key
+        <input name="settings-octoprint_key" type="password">
+      </label>
+
+      <label class="settings-overlay">Enable Overlay Server &amp; Port<br><small>Requires restart</small>
+        <div>
+          <input name="settings-overlay_enable" type="checkbox"><input name="settings-overlay_port" type="number" min="2000" max="9000" value="1337">
+        </div>
+      </label>
+      <button id="open-overlay">Open overlay help</button>
+      
+      <button id="test-connection">Save &amp; test connection</button>
+  
+      <div id="flash"></div>
+
+
+    </details>
+    <details>
+      <summary><h3>Version Info</h3></summary>
+      <ul>
+        <li>OctoPrint Tray: <span id="version_octoprinttray"></span></li>
+        <li>Electron: <span id="version_electron"></span></li>
+        <li>Chromium: <span id="version_chromium"></span></li>
+        <li>OctoPrint Server: <span id="version_octoprintserver"></span></li>
+      </ul>
+      <button id="open-github">View on GitHub</button>
+  
+    </details>
+  </footer>
+
+  <script>
+    require('./renderer.js')
+
+
+
+
+  </script>
+</body>
+</html>

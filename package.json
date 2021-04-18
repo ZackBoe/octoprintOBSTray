@@ -1,0 +1,38 @@
+{
+  "name": "octoprint-tray",
+  "version": "0.0.1",
+  "description": "octoprint tray application & obs overlay source",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder --win"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.10.4",
+    "electron-store": "^7.0.3",
+    "electron-util": "^0.15.0",
+    "got": "^11.8.2",
+    "normalize.css": "^8.0.1"
+  },
+  "devDependencies": {
+    "electron": "^12.0.4",
+    "electron-builder": "^22.10.5",
+    "electron-reloader": "^1.2.0"
+  },
+  "build": {
+    "appId": "octoprint-tray.zackboehm.com",
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "icons/icon.png"
+    },
+    "linux": {
+      "target": "zip"
+    }
+  }
+}
