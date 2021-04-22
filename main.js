@@ -4,6 +4,8 @@ const { app, BrowserWindow, Menu, Tray, nativeImage, shell, ipcMain } = require(
 const {electronVersion, chromeVersion} = require('electron-util');
 const Store = require('electron-store')
 
+console.log(app.getPath('userData'))
+
 try {
 	require('electron-reloader')(module);
 } catch {}
@@ -45,9 +47,11 @@ app.whenReady().then(() => {
 
   mainWindow =  new BrowserWindow({
     maximizable: false,
+    resizable: false,
     frame: false,
-    x: 320,
-    y: 450,
+    width: 360,
+    height: 600,
+    backgroundColor: '#16161a',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -102,6 +106,7 @@ app.whenReady().then(() => {
     console.log('Saving:', arg)
     store.set('octoprint.url', arg.octoprintURL || '')
     store.set('octoprint.key', arg.octoprintKey || '')
+    store.set('octoprint.refresh', arg.octoprintRefresh || 15)
     store.set('octoprint.overlay.enabled', arg.overlayEnable)
     store.set('octoprint.overlay.port', arg.overlayPort || 1337)
   })
@@ -132,7 +137,7 @@ async function starMonitoring() {
     tray.setImage(icons.orange)
     
     monitorJob()
-    monitorInterval = setInterval(monitorJob, 5000)
+    monitorInterval = setInterval(monitorJob, store.get('octoprint.refresh' || 30)*1000)
   } 
   else console.error('what', connectionTest)
 }

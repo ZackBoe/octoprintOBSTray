@@ -7,7 +7,14 @@
     *, *:before, *:after {
       box-sizing: border-box;
     }
-    
+
+    :not(input):not(textarea),
+    :not(input):not(textarea)::after,
+    :not(input):not(textarea)::before {
+        -webkit-user-select: none;
+        user-select: none;
+    }
+        
     body {
       min-height: 100vh;
       display: flex;
@@ -47,7 +54,6 @@
 
     footer {
       margin-top: auto;
-      width: 320px;
       background: #121629;
     }
 
@@ -100,15 +106,16 @@
       font-size: 120%;
     }
     
-    label.settings-overlay div {
+    hr {
+      margin: 2rem 0;
+    }
+
+    label div {
       display: flex;
     }
 
-    input[name='settings-overlay_enable'] {
+    label div input {
       margin-right: 1rem;
-    }
-
-    input[name='settings-overlay_enable'], input[name='settings-overlay_port'] {
       display: inline;
       align-self: center;
     }
@@ -144,18 +151,33 @@
       <label>OctoPrint API Key
         <input name="settings-octoprint_key" type="password">
       </label>
+      
+      <label>API Refresh Time (Seconds)<br><small>Requires restart. Applies to overlay and .txt output</small>
+          <input name="settings-octoprint_refresh" type="number" min="5" max="120" value="30">
+      </label>
+
+      <button id="test-connection">Save &amp; test connection</button>
+
+      <div id="flash"></div>
+
+      <hr>
 
       <label class="settings-overlay">Enable Overlay Server &amp; Port<br><small>Requires restart</small>
         <div>
           <input name="settings-overlay_enable" type="checkbox"><input name="settings-overlay_port" type="number" min="2000" max="9000" value="1337">
         </div>
       </label>
-      <button id="open-overlay">Open overlay help</button>
       
-      <button id="test-connection">Save &amp; test connection</button>
-  
-      <div id="flash"></div>
+      <button id="open-overlay">Open overlay help</button>
+<!-- 
+      <hr>
 
+      <label class="settings-txt">Enable .txt Output<br><small>Requires restart</small>
+        <div>
+          <input name="settings-txt_enable" type="checkbox">
+          <button id="open-txtDir">Open output directory</button>
+        </div>
+      </label> -->
 
     </details>
     <details>

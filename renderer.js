@@ -7,6 +7,7 @@ dayjs.extend(duration)
 let settingsFields = {
   octoprintURL: document.querySelector('[name="settings-octoprint_url"]'),
   octoprintKey: document.querySelector('[name="settings-octoprint_key"]'),
+  octoprintRefresh: document.querySelector('[name="settings-octoprint_refresh"]'),
   overlayEnable: document.querySelector('[name="settings-overlay_enable"]'),
   overlayPort: document.querySelector('[name="settings-overlay_port"]'),
 }
@@ -14,6 +15,7 @@ let settingsFields = {
 function setSettings(store) {
   if(store.url) settingsFields.octoprintURL.value = store.url
   if(store.key) settingsFields.octoprintKey.value = store.key
+  if(store.refresh) settingsFields.octoprintRefresh.value = store.refresh
   if(store.overlay.enabled) settingsFields.overlayEnable.checked = store.overlay.enabled
   if(store.overlay.port) settingsFields.overlayPort.value = store.overlay.port
 }
@@ -24,6 +26,7 @@ function saveSettings() {
   ipcRenderer.send('settings-save', {
     octoprintURL: settingsFields.octoprintURL.value,
     octoprintKey: settingsFields.octoprintKey.value,
+    octoprintRefresh: settingsFields.octoprintRefresh.value,
     overlayEnable: settingsFields.overlayEnable.checked,
     overlayPort: settingsFields.overlayPort.value,
   })

@@ -7,6 +7,37 @@ const duration = require('dayjs/plugin/duration')
 dayjs.extend(duration)
 
 console.log(`Overlay server running on port ${store.get('octoprint.overlay.port') || '1337' }`);
+let html = `<html><head><title>OctoPrint Overlay</title>
+<meta http-equiv="refresh" content="${store.get('octoprint.refresh' || 30)}">
+<style>
+body {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  font-size: 5rem;
+  -webkit-text-stroke: 2px white;
+  font-weight: bold;
+  font-family: "SFMono-Regular", "Cascadia Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+progress {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 50%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.progress_details {
+  display: flex;
+  width: 100%;
+  margin-top: 1rem;
+  justify-content: space-between;
+}
+</style></head><body>`
+
 
 http.createServer(async (req, res) => {
   console.log(req.url)
@@ -39,16 +70,22 @@ http.createServer(async (req, res) => {
       break;
     case '/progressBar': 
       res.writeHead(200, {'Content-Type': 'text/html'});
-      res.end(`<style>body { background: transparent; }</style><progress style="width: 100%; height: 100%;" max="100" value="${Math.round(job?.progress?.completion)}">${Math.round(job?.progress?.completion)}%</progress>`)
+      res.end(`${html}
+        <progress max="100" value="${Math.round(job?.progress?.completion)}">${Math.round(job?.progress?.completion)}%</progress>
+        <div class="progress_details">
+          <span>${dayjs.duration(job?.progress?.printTime, 'seconds').format('HH:mm')}</span>
+          <span>${Math.round(job?.progress?.completion)}%</span>
+          <span>${dayjs.duration(job?.progress?.printTimeLeft, 'seconds').format('HH:mm')}</span>
+        </div>`)
       response = ''
       break;
     case '/time':
       responseJSON = {printTime: job?.progress?.printTime}
-      response = dayjs.duration(job?.progress?.printTime, 'seconds').format('HH:mm:ss')
+      response = dayjs.duration(job?.progress?.printTime, 'seconds').format('HH:mm')
       break;
     case '/timeLeft':
       responseJSON = {printTimeLeft: job?.progress?.printTimeLeft}
-      response = dayjs.duration(job?.progress?.printTimeLeft, 'seconds').format('HH:mm:ss')
+      response = dayjs.duration(job?.progress?.printTimeLeft, 'seconds').format('HH:mm')
       break;
     default:
       response = ''
@@ -62,7 +99,7 @@ http.createServer(async (req, res) => {
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(responseJSON))
     }
-    else res.end(response)
+    else res.end(html+response+'</body></html>')
   }
 
 
