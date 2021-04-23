@@ -1,6 +1,6 @@
 {
   "name": "octoprint-tray",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "octoprint tray application & obs overlay source",
   "main": "main.js",
   "scripts": {
