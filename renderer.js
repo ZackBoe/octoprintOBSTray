@@ -10,12 +10,14 @@ let settingsFields = {
   octoprintRefresh: document.querySelector('[name="settings-octoprint_refresh"]'),
   overlayEnable: document.querySelector('[name="settings-overlay_enable"]'),
   overlayPort: document.querySelector('[name="settings-overlay_port"]'),
+  txtEnabled: document.querySelector('[name="settings-txt_enable"]'),
 }
 
 function setSettings(store) {
   if(store.url) settingsFields.octoprintURL.value = store.url
   if(store.key) settingsFields.octoprintKey.value = store.key
   if(store.refresh) settingsFields.octoprintRefresh.value = store.refresh
+  if(store.txt.enabled) settingsFields.txtEnabled.checked = store.txt.enabled
   if(store.overlay.enabled) settingsFields.overlayEnable.checked = store.overlay.enabled
   if(store.overlay.port) settingsFields.overlayPort.value = store.overlay.port
 }
@@ -27,6 +29,7 @@ function saveSettings() {
     octoprintURL: settingsFields.octoprintURL.value,
     octoprintKey: settingsFields.octoprintKey.value,
     octoprintRefresh: settingsFields.octoprintRefresh.value,
+    txtEnabled: settingsFields.txtEnabled.checked,
     overlayEnable: settingsFields.overlayEnable.checked,
     overlayPort: settingsFields.overlayPort.value,
   })
@@ -75,14 +78,19 @@ ipcRenderer.on('test-connection', (e, arg) => {
 
 ipcRenderer.on('job', (e, job) => {
   console.log('job', job)
-  document.querySelector('main').innerHTML = `<ul>
-  <li>Status: ${job.state}</li>
-  <li>Filename: ${job.job.file.name.split('.gcode')[0]}</li>
-  <li>Progress: ${Math.round(job?.progress?.completion)}%</li>
-  <li>Print Time: ${dayjs.duration(job?.progress?.printTime, 'seconds').format('HH:mm:ss')}</li>
-  <li>Print Time Left: ${dayjs.duration(job?.progress?.printTimeLeft, 'seconds').format('HH:mm:ss')}</li>
+  document.querySelector('main').innerHTML = `
+  <ul>
+    <li>${job.state}</li>
+    <li>${job.job.file.name.split('.gcode')[0]}</li>
   </ul>
-  <progress style="width: 100%;" max="100" value="${Math.round(job?.progress?.completion)}">${Math.round(job?.progress?.completion)}%</progress>`
+
+  <progress max="100" value="${Math.round(job?.progress?.completion)}">${Math.round(job?.progress?.completion)}%</progress>
+  <div class="progress_details">
+    <span>${dayjs.duration(job?.progress?.printTime, 'seconds').format('HH:mm')}</span>
+    <span>${Math.round(job?.progress?.completion)}%</span>
+    <span>${dayjs.duration(job?.progress?.printTimeLeft, 'seconds').format('HH:mm')}</span>
+  </div>
+  `
 })
 
 const btnMinimize = document.querySelector('#btn-minimize')
@@ -95,6 +103,11 @@ const btnExit = document.querySelector('#btn-exit')
 btnExit.addEventListener('click', () => {
   window.close()
   ipcRenderer.send('exit')
+})
+
+const btnDir = document.querySelector('#open-txtDir')
+btnDir.addEventListener('click', () => {
+  ipcRenderer.send('open', 'appdir')
 })
 
 const openOctoprint = document.querySelector('#open-octoprint')

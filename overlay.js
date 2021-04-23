@@ -15,7 +15,7 @@ body {
   margin: 0;
   padding: 0;
   font-size: 5rem;
-  -webkit-text-stroke: 2px white;
+  /* -webkit-text-stroke: 2px white; */
   font-weight: bold;
   font-family: "SFMono-Regular", "Cascadia Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }

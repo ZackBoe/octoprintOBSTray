@@ -1,10 +1,9 @@
 const octoprint = require('./octoprint')
 const path = require('path')
+const fs = require('fs')
 const { app, BrowserWindow, Menu, Tray, nativeImage, shell, ipcMain } = require('electron')
-const {electronVersion, chromeVersion} = require('electron-util');
+const {electronVersion, chromeVersion, isFirstAppLaunch} = require('electron-util');
 const Store = require('electron-store')
-
-console.log(app.getPath('userData'))
 
 try {
 	require('electron-reloader')(module);
@@ -15,6 +14,7 @@ let tray;
 let isQuitting;
 let job;
 let monitorInterval;
+let txtDir = path.join(app.getPath('userData'), 'txtOutput')
 const icons = {
   orange: nativeImage.createFromPath(path.join(__dirname, 'images/icon-orange.png')),
   red: nativeImage.createFromPath(path.join(__dirname, 'images/icon-red.png')),
@@ -22,6 +22,15 @@ const icons = {
   green: nativeImage.createFromPath(path.join(__dirname, 'images/icon-green.png')),
 }
 
+if(isFirstAppLaunch()) {
+  console.log('First launch!')
+  if(!fs.existsSync(txtDir)) {
+    console.log('Creating txt output dir ', txtDir)
+    fs.mkdirSync(txtDir, (err) => {
+      console.error('Error creating txt output dir ', err)
+    })
+  }
+}
 const store = new Store()
 
 const instanceLock = app.requestSingleInstanceLock()
@@ -65,6 +74,10 @@ app.whenReady().then(() => {
     require('./overlay')
   }
 
+  if(store.get('octoprint.txt.enabled')) {
+    require('./txtOutput')
+  }
+
   starMonitoring()
 
   mainWindow.on('minimize', (e) => {
@@ -86,6 +99,7 @@ app.whenReady().then(() => {
     if(args === 'github') shell.openExternal('https://github.com/zackboe/octoprintOBSTray')
     else if (args === 'octoprint') shell.openExternal(store.get('octoprint.url'))
     else if (args === 'overlay') shell.openExternal(`http://localhost:${store.get('octoprint.overlay.port') || '1337'}`)
+    else if (args === 'appdir') shell.showItemInFolder(txtDir)
   })
 
   ipcMain.on('settings-init', async (e, arg) => {
@@ -107,6 +121,7 @@ app.whenReady().then(() => {
     store.set('octoprint.url', arg.octoprintURL || '')
     store.set('octoprint.key', arg.octoprintKey || '')
     store.set('octoprint.refresh', arg.octoprintRefresh || 15)
+    store.set('octoprint.txt.enabled', arg.txtEnabled || false)
     store.set('octoprint.overlay.enabled', arg.overlayEnable)
     store.set('octoprint.overlay.port', arg.overlayPort || 1337)
   })
